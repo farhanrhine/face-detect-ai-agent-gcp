@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: llmops-app
+  name: face-detect-ai-agent
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: llmops-app
+      app: face-detect-ai-agent
   template:
     metadata:
       labels:
-        app: llmops-app
+        app: face-detect-ai-agent
     spec:
       containers:
-      - name: llmops-app
-        image: us-central1-docker.pkg.dev/gen-lang-client-0729539659/llmops-repo/llmops-app:latest
+      - name: face-detect-ai-agent
+        image: us-central1-docker.pkg.dev/gen-lang-client-0729539659/face-detect-repo/face-detect-ai-agent:latest
         ports:
         - containerPort: 5000
         env:
         - name: GROQ_API_KEY
           valueFrom:
             secretKeyRef:
-              name: llmops-secrets
+              name: face-detect-secrets
               key: GROQ_API_KEY
 
 ---
@@ -29,10 +29,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: llmops-service
+  name: face-detect-service
 spec:
   selector:
-    app: llmops-app
+    app: face-detect-ai-agent
   ports:
     - protocol: TCP
       port: 80
