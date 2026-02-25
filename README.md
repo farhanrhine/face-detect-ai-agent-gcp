@@ -11,6 +11,10 @@ A Flask web application that detects celebrity faces in uploaded images using Op
 - Ask follow-up questions about the celebrity via Q&A
 - Saves Q&A history in your browser
 
+## Workflow
+
+![Project Workflow](workflow.png)
+
 ## Tech Stack
 
 | Layer | Technology |
