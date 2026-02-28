@@ -11,55 +11,6 @@ A Flask web application that detects celebrity faces in uploaded images using Op
 - Ask follow-up questions about the celebrity via Q&A
 - Saves Q&A history in your browser
 
-## Workflow
-
-```mermaid
-flowchart TD
-    %% Define Styles
-    classDef blueBox fill:#1976d2,stroke:#0d47a1,stroke-width:2px,color:#fff
-    classDef greenBox fill:#388e3c,stroke:#1b5e20,stroke-width:2px,color:#fff
-    classDef orangeBox fill:#f57c00,stroke:#e65100,stroke-width:2px,color:#fff
-    classDef purpleBox fill:#7b1fa2,stroke:#4a148c,stroke-width:2px,color:#fff
-    classDef lightBlueBox fill:#4dd0e1,stroke:#0097a7,stroke-width:2px,color:#333
-    classDef greyBox fill:#f5f5f5,stroke:#9e9e9e,stroke-width:2px,color:#333
-    classDef darkGreenRound fill:#2e7d32,stroke:#1b5e20,stroke-width:2px,color:#fff
-
-    subgraph DevSetup [1. DEVELOPMENT SETUP]
-        direction TB
-        A[Project & API<br>Setup]:::blueBox --> B[Image Handler<br>Code]:::blueBox
-        B --> C[Celebrity<br>Detector Code]:::orangeBox
-        C --> D[QA Engine<br>Code]:::purpleBox
-        D --> E[Routes<br>Code]:::greenBox
-        E --> F[Application<br>Code]:::lightBlueBox
-    end
-    
-    subgraph Containerization [2. CONTAINERIZATION]
-        direction LR
-        G[Dockerfile]:::blueBox
-        H[Kubernetes<br>Deployment<br>File]:::greenBox
-    end
-
-    subgraph CI [3. CI / CD PIPELINE]
-        direction TB
-        I[Code Versioning<br>using GitHub]:::greyBox --> J[CircleCI<br>Pipeline]:::greyBox
-        J --> K[Build & Push<br>Image to GAR]:::orangeBox
-        K --> L[Deploy<br>to GKE]:::greenBox
-    end
-
-    M([Deployed<br>Application<br>on GKE]):::darkGreenRound
-
-    %% Connections across subgraphs
-    F --> |Git Push triggers| I
-    G -.-> |Read by| K
-    H -.-> |Applied by| L
-    L --> M
-
-    %% Subgraph Styling
-    style DevSetup fill:#fffde7,stroke:#fbc02d,stroke-dasharray: 5 5
-    style Containerization fill:#e8f5e9,stroke:#4caf50,stroke-dasharray: 5 5
-    style CI fill:#f3e5f5,stroke:#9c27b0,stroke-dasharray: 5 5
-```
-
 ## Tech Stack
 
 | Layer | Technology |
@@ -94,6 +45,63 @@ face-detect-ai-agent/
 ├── pyproject.toml           # Project dependencies
 └── .circleci/
     └── config.yml           # CI/CD pipeline
+```
+
+## Architecture Workflow
+
+```mermaid
+graph TD
+    %% Define Styles
+    classDef user fill:#3498db,stroke:#2980b9,stroke-width:2px,color:#fff;
+    classDef ingress fill:#f39c12,stroke:#e67e22,stroke-width:2px,color:#fff;
+    classDef k8s fill:#2ecc71,stroke:#27ae60,stroke-width:2px,color:#fff;
+    classDef app fill:#9b59b6,stroke:#8e44ad,stroke-width:2px,color:#fff;
+    classDef ext fill:#e74c3c,stroke:#c0392b,stroke-width:2px,color:#fff;
+    classDef cicd fill:#34495e,stroke:#2c3e50,stroke-width:2px,color:#fff;
+
+    %% CI/CD Pipeline
+    subgraph CI_CD["CI/CD Pipeline (CircleCI)"]
+        Dev["Developer"] -->|git push| GitHub["GitHub Repository"]
+        GitHub -->|triggers| CircleCI["CircleCI Pipeline"]
+        CircleCI -->|1. Build Image| DockerBuild["Docker Build (python:3.12-slim + uv)"]
+        DockerBuild -->|2. Push Image| GCP_AR["GCP Artifact Registry (us-central1)"]
+        CircleCI -->|3. Deploy| GKE_Deploy["Update GKE Deployment"]
+    end
+    
+    %% GCP Ecosystem
+    subgraph GCP["Google Cloud Platform (GKE)"]
+        GCP_AR -.->|Pulls latest image| Container
+        
+        %% Kubernetes Cluster
+        subgraph Cluster["Kubernetes Cluster"]
+            Ingress["Nginx Ingress (face-detect-ingress)"]
+            CertManager["Cert-Manager (Let's Encrypt TLS)"]
+            Service["K8s Service (face-detect-service)"]
+            
+            CertManager -.->|Issues & Renews Certs| Ingress
+            
+            subgraph Pods["Deployment: face-detect-ai-agent"]
+                Container["Flask App Container\n(app.py : Port 5000)\n+ OpenCV Face Detection"]
+            end
+            
+            Ingress -->|Routes HTTP/S Traffic| Service
+            Service -->|Load Balances| Container
+        end
+    end
+
+    %% External & Users
+    User["End User\n(Web Browser)"] -->|HTTPS (face-detect-ai.tech)| Ingress
+    
+    GroqAPI["Groq API\n(Llama 4 Maverick)"]
+    Container -->|API Calls (Identity + Q&A)| GroqAPI
+
+    %% Assign Styles
+    class Dev,User user;
+    class Ingress,Service ingress;
+    class Container,Pods app;
+    class GroqAPI ext;
+    class GitHub,CircleCI,DockerBuild,GCP_AR,GKE_Deploy cicd;
+    class CertManager k8s;
 ```
 
 ## Run Locally
