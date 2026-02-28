@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: face-detect-ai-agent
+  name: face-detect-ai-agent # name of the deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: face-detect-ai-agent
+      app: face-detect-ai-agent-app # label for the deployment
   template:
     metadata:
       labels:
-        app: face-detect-ai-agent
+        app: face-detect-ai-agent-app # label for the pod
     spec:
       containers:
-      - name: face-detect-ai-agent
-        image: us-central1-docker.pkg.dev/gen-lang-client-0729539659/face-detect-repo/face-detect-ai-agent:latest
+      - name: face-detect-ai-agent-app # name of the container
+        image: us-central1-docker.pkg.dev/gen-lang-client-0729539659/face-detect-repo/face-detect-ai-agent:latest # change this image name when you build new image
         ports:
         - containerPort: 5000
         env:
