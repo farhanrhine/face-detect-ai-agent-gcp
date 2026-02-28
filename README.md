@@ -15,18 +15,22 @@ A Flask web application that detects celebrity faces in uploaded images using Op
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#dbeafe', 'primaryTextColor': '#1e3a5f', 'primaryBorderColor': '#2563eb', 'lineColor': '#3b82f6', 'secondaryColor': '#f0fdf4', 'tertiaryColor': '#fef3c7', 'edgeLabelBackground': '#ffffff'}}}%%
-flowchart LR
-    Phase1["<b>Phase 1: Local Dev & Config</b><br><br>💻 Flask App Source Code<br>📦 Create Dockerfile<br>🚀 K8s Deployment.yaml"]:::phase1
+flowchart TD
+    A(["💻 Write Flask App Source Code"]):::phase1 --> B["📦 Create Dockerfile"]:::phase1
+    B --> C["🚀 Write Kubernetes Deployment.yaml"]:::phase1
     
-    Phase2["<b>Phase 2: CI/CD Pipeline</b><br><br>📤 Push Code to GitHub<br>🔄 CircleCI Workflow<br>🏗️ Build Image on GCP<br>🗄️ Push to GAR<br>☸️ Deploy to GKE"]:::phase2
-
-    Phase3["<b>Phase 3: Domain & HTTPS</b><br><br>🌐 Register .TECH Domain<br>🗺️ Map DNS to GKE IP<br>🚦 Install NGINX Ingress<br>🔒 Setup Cert-Manager<br>📑 Apply ingress.yaml"]:::phase3
-
-    Live{"🎉 Live App on<br>Custom Domain"}:::live
-
-    Phase1 --->|"Commit & Push"| Phase2
-    Phase2 --->|"Use Raw IP"| Phase3
-    Phase3 --->|"Traffic Secured"| Live
+    C -->|"Commit & Push"| D["📤 Trigger CircleCI Pipeline via GitHub"]:::phase2
+    D --> E["🏗️ Build Docker Image on GCP"]:::phase2
+    E --> F["🗄️ Push to Artifact Registry"]:::phase2
+    F --> G["☸️ Deploy App to GKE Cluster"]:::phase2
+    
+    G -->|"Use Raw IP"| H["🌐 Register .TECH Domain"]:::phase3
+    H --> I["🗺️ Map DNS Record to GKE IP"]:::phase3
+    I --> J["🚦 Install NGINX Ingress"]:::phase3
+    J --> K["🔒 Setup Let's Encrypt Cert-Manager"]:::phase3
+    K --> L["📑 Apply ingress.yaml & ClusterIssuer"]:::phase3
+    
+    L -->|"Traffic Secured"| M{"🎉 Live App on Custom Domain"}:::live
 
     classDef phase1 fill:#eff6ff,stroke:#2563eb,stroke-width:2px,color:#1e40af
     classDef phase2 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#92400e
