@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: face-detect-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - face-detect-ai.tech # TODO: Update if you use a different domain name
+      secretName: face-detect-tls
+  rules:
+    - host: face-detect-ai.tech # TODO: Update if you use a different domain name
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: face-detect-service
+                port:
+                  number: 80

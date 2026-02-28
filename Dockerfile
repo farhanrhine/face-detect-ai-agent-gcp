@@ -19,11 +19,16 @@ FROM python:3.12-slim
 # Set working directory inside the container
 WORKDIR /app
 
+# Copy the uv binary from the official image (fastest way to get uv)
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 # Set environment variables
 # - Prevents Python from writing .pyc bytecode files to disk
 # - Ensures stdout/stderr logs appear immediately (no buffering)
+# - Enable bytecode compilation for uv performance
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV UV_COMPILE_BYTECODE=1
 
 # Install system dependencies
 # - build-essential : compiling Python packages that need C extensions
@@ -43,9 +48,6 @@ RUN apt-get update && apt-get install -y \
     libxrender-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv (fast Python package manager, replaces pip)
-RUN pip install --no-cache-dir uv
-
 # Copy dependency files FIRST (Docker layer caching optimization)
 # - If only source code changes, Docker reuses the cached dependency layer
 # - Dependencies are only re-installed when pyproject.toml or uv.lock changes
@@ -53,7 +55,14 @@ COPY pyproject.toml .
 COPY uv.lock* ./
 
 # Install Python dependencies using uv (fast & reproducible)
+# - Using --no-dev and --frozen to ensure exact production versions from uv.lock are installed
 RUN uv sync --no-dev --frozen
+
+# Add virtual environment to PATH (production optimization)
+# - 'uv sync' creates a .venv in /app/.venv with all dependencies
+# - By adding .venv/bin to PATH, 'python' resolves directly to the venv's Python
+# - This removes 'uv' as a runtime dependency
+ENV PATH="/app/.venv/bin:$PATH"
 
 # Copy the rest of the application code
 COPY . .
@@ -65,5 +74,7 @@ EXPOSE 5000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:5000/ || exit 1
 
-# Run the Flask application using uv
-CMD ["uv", "run", "app.py"]
+# Run the Flask application
+# - 'python' now resolves to /app/.venv/bin/python (via PATH above)
+# - No need for 'uv run' wrapper — the venv is already on PATH
+CMD ["python", "app.py"]
