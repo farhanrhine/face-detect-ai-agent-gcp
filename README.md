@@ -49,9 +49,9 @@ flowchart TD
     M([Deployed<br>Application<br>on GKE]):::darkGreenRound
 
     %% Connections across subgraphs
-    F --> |Triggers| G
-    G --> |Read by| K
-    H --> |Applied by| L
+    F --> |Git Push triggers| I
+    G -.-> |Read by| K
+    H -.-> |Applied by| L
     L --> M
 
     %% Subgraph Styling
