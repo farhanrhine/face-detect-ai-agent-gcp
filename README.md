@@ -41,10 +41,12 @@ face-detect-ai-agent/
 │   └── style.css            # Styling
 ├── app.py                   # Entry point
 ├── Dockerfile               # Docker build config
+├── cluster-issuer.yaml      # K8s Cert-Manager Let's Encrypt config
+├── ingress.yaml             # K8s Nginx Ingress routing
 ├── kubernetes-deployment.yaml  # K8s deployment + service
 ├── pyproject.toml           # Project dependencies
 └── .circleci/
-    └── config.yml           # CI/CD pipeline
+    └── config.yaml          # CI/CD pipeline
 ```
 
 ## Architecture Workflow
