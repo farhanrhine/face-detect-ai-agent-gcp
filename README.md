@@ -14,64 +14,24 @@ A Flask web application that detects celebrity faces in uploaded images using Op
 ## Workflow
 
 ```mermaid
-flowchart TD
-    %% Define Styles
-    classDef blueBox fill:#1976d2,stroke:#0d47a1,stroke-width:2px,color:#fff
-    classDef greenBox fill:#388e3c,stroke:#1b5e20,stroke-width:2px,color:#fff
-    classDef orangeBox fill:#f57c00,stroke:#e65100,stroke-width:2px,color:#fff
-    classDef purpleBox fill:#7b1fa2,stroke:#4a148c,stroke-width:2px,color:#fff
-    classDef darkGreenRound fill:#2e7d32,stroke:#1b5e20,stroke-width:2px,color:#fff
-    classDef tealBox fill:#00796b,stroke:#004d40,stroke-width:2px,color:#fff
-    classDef greyBox fill:#f5f5f5,stroke:#9e9e9e,stroke-width:2px,color:#333
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#dbeafe', 'primaryTextColor': '#1e3a5f', 'primaryBorderColor': '#2563eb', 'lineColor': '#3b82f6', 'secondaryColor': '#f0fdf4', 'tertiaryColor': '#fef3c7', 'edgeLabelBackground': '#ffffff'}}}%%
+flowchart LR
+    Phase1["<b>Phase 1: Local Dev & Config</b><br><br>💻 Flask App Source Code<br>📦 Create Dockerfile<br>🚀 K8s Deployment.yaml"]:::phase1
+    
+    Phase2["<b>Phase 2: CI/CD Pipeline</b><br><br>📤 Push Code to GitHub<br>🔄 CircleCI Workflow<br>🏗️ Build Image on GCP<br>🗄️ Push to GAR<br>☸️ Deploy to GKE"]:::phase2
 
-    subgraph Phase1 [1. LOCAL DEV & CONFIG]
-        direction LR
-        App[Flask App<br>Source Code]:::blueBox
-        Docker[Dockerfile]:::orangeBox
-        K8s[Kubernetes<br>Deployment.yaml]:::greenBox
-        App --> Docker
-        Docker --> K8s
-    end
+    Phase3["<b>Phase 3: Domain & HTTPS</b><br><br>🌐 Register .TECH Domain<br>🗺️ Map DNS to GKE IP<br>🚦 Install NGINX Ingress<br>🔒 Setup Cert-Manager<br>📑 Apply ingress.yaml"]:::phase3
 
-    subgraph Phase2 [2. CI/CD PIPELINE]
-        direction LR
-        Git[Push Code<br>to GitHub]:::greyBox
-        Circle[CircleCI<br>Workflow]:::greyBox
-        Build[Build Docker<br>Image on GCP]:::blueBox
-        GAR[Push to GCP<br>Artifact Registry]:::orangeBox
-        GKE[Deploy App<br>to GKE Cluster]:::greenBox
+    Live{"🎉 Live App on<br>Custom Domain"}:::live
 
-        Git --> Circle
-        Circle --> Build
-        Build --> GAR
-        GAR --> GKE
-    end
+    Phase1 --->|"Commit & Push"| Phase2
+    Phase2 --->|"Use Raw IP"| Phase3
+    Phase3 --->|"Traffic Secured"| Live
 
-    subgraph Phase3 [3. DOMAIN & HTTPS SETUP]
-        direction LR
-        Domain[Register .TECH<br>Domain]:::purpleBox
-        DNS[Map DNS Record<br>to GKE IP]:::purpleBox
-        Nginx[Install NGINX<br>Ingress]:::tealBox
-        Cert[Setup Let's Encrypt<br>Cert-Manager]:::tealBox
-        Ingress[Apply ingress.yaml<br>& ClusterIssuer]:::tealBox
-
-        Domain --> DNS
-        DNS --> Nginx
-        Nginx --> Cert
-        Cert --> Ingress
-    end
-
-    Live([Live App on<br>Custom Domain]):::darkGreenRound
-
-    %% Connections across subgraphs
-    K8s --> |Commit to| Git
-    GKE --> |Raw IP used by| Domain
-    Ingress --> |Routes Traffic to| Live
-
-    %% Subgraph Styling
-    style Phase1 fill:#fffde7,stroke:#fbc02d,stroke-dasharray: 5 5
-    style Phase2 fill:#f3e5f5,stroke:#9c27b0,stroke-dasharray: 5 5
-    style Phase3 fill:#e0f7fa,stroke:#00acc1,stroke-dasharray: 5 5
+    classDef phase1 fill:#eff6ff,stroke:#2563eb,stroke-width:2px,color:#1e40af
+    classDef phase2 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#92400e
+    classDef phase3 fill:#f0fdf4,stroke:#22c55e,stroke-width:2px,color:#166534
+    classDef live fill:#fce7f3,stroke:#ec4899,stroke-width:2px,color:#9d174d
 ```
 
 ## Tech Stack
