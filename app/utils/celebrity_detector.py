@@ -15,6 +15,7 @@ class CelebrityDetector:
     def identify(self, image_bytes):
         encoded_image = base64.b64encode(image_bytes).decode() # this converts the image bytes to a base64 string
 
+# groq  api no langchaiin, zero framework, 
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
