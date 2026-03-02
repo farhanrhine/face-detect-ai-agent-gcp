@@ -13,12 +13,12 @@ class CelebrityDetector:
         self.model = "meta-llama/llama-4-maverick-17b-128e-instruct"
 
     def identify(self, image_bytes):
-        encoded_image = base64.b64encode(image_bytes).decode()
+        encoded_image = base64.b64encode(image_bytes).decode() # this converts the image bytes to a base64 string
 
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
-        }
+        } # This sets up the headers for the API request, including the authorization token and content type.
 
         prompt = {
             "model": self.model,
@@ -29,21 +29,21 @@ class CelebrityDetector:
                         {
                             "type": "text",
                             "text": """You are a celebrity recognition expert AI.
-Identify the person in the image. If known, respond EXACTLY in this format with no extra text:
+                            Identify the person in the image. If known, respond EXACTLY in this format with no extra text:
 
-- **Full Name**: <name>
-- **Profession**: <profession>
-- **Nationality**: <nationality>
-- **Famous For**: <short description>
-- **Top Achievements**:
-- <achievement 1>
-- <achievement 2>
-- <achievement 3>
-- <achievement 4>
-- <achievement 5>
+                            - **Full Name**: <name>
+                            - **Profession**: <profession>
+                            - **Nationality**: <nationality>
+                            - **Famous For**: <short description>
+                            - **Top Achievements**:
+                            - <achievement 1>
+                            - <achievement 2>
+                            - <achievement 3>
+                            - <achievement 4>
+                            - <achievement 5>
 
-Important: Each achievement must be on its own line starting with '- '.
-If the person is unknown, return only: Unknown."""
+                            Important: Each achievement must be on its own line starting with '- '.
+                            If the person is unknown, return only: Unknown."""
                         },
                         {
                             "type": "image_url",
