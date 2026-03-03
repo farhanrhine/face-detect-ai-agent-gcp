@@ -1,5 +1,7 @@
 # 🌟 Celebrity Face Detect AI Agent
 
+**Live:** [https://face-detect.tech](https://face-detect.tech)
+
 A Flask web application that detects celebrity faces in uploaded images using OpenCV and identifies them using the Groq AI API. Users can also ask questions about the detected celebrity.
 
 ## What It Does
@@ -92,7 +94,7 @@ graph TD
     end
 
     %% External & Users
-    User["End User<br>(Web Browser)"] -->|"HTTPS (face-detect-ai.tech)"| Ingress
+    User["End User<br>(Web Browser)"] -->|"HTTPS (face-detect.tech)"| Ingress
     
     GroqAPI["Groq API<br>(Llama 4 Maverick)"]
     Container -->|"API Calls (Identity + Q&A)"| GroqAPI
