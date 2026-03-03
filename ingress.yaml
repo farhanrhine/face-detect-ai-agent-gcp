@@ -8,10 +8,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - face-detect-ai.tech # TODO: Update if you use a different domain name
+        - face-detect.tech
       secretName: face-detect-tls
   rules:
-    - host: face-detect-ai.tech # TODO: Update if you use a different domain name
+    - host: face-detect.tech
       http:
         paths:
           - path: /
