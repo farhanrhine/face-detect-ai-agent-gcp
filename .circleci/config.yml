@@ -32,8 +32,8 @@ jobs:
       - run:
           name: Build and Push Image
           command: |
-            docker build -t us-central1-docker.pkg.dev/$GOOGLE_PROJECT_ID/$GCR_REPO/face-detect-ai-agent:latest .
-            docker push us-central1-docker.pkg.dev/$GOOGLE_PROJECT_ID/$GCR_REPO/face-detect-ai-agent:latest
+            docker build -t us-central1-docker.pkg.dev/face-detect-ai-agent/face-detection-ai-agent/face-detect-ai-agent:latest .
+            docker push us-central1-docker.pkg.dev/face-detect-ai-agent/face-detection-ai-agent/face-detect-ai-agent:latest
 
   deploy_to_gke:
     executor: docker-executor
