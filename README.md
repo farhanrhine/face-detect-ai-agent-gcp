@@ -113,7 +113,7 @@ graph TD
 **1. Clone the repo:**
 
 ```bash
-git clone https://github.com/farhanrhine/face-detect-ai-agent-gcp.git
+git clone https://github.com/farhanrhine/Celebrity-Face-Detect-AI-Agent.git
 cd face-detect-ai-agent-gcp
 ```
 
